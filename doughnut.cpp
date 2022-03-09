@@ -179,7 +179,9 @@ void Doughnut::generation(){
                 adding = adding + 1;
             }
             else if(neighbors>3){
-
+                if(temp!='X'){
+                    adding = adding - 1;
+                }
                 insertChar(z,w,'-');
                 adding = adding + 1;
             }
