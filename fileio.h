@@ -4,6 +4,10 @@
 #include <iostream>
 using namespace std;
 
+/*
+Simple header class for FileIO
+*/
+
 class FileIO{
     public:
         FileIO();

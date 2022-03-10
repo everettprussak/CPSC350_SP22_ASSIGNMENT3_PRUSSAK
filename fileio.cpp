@@ -5,6 +5,12 @@ FileIO::FileIO(){
     //nothing
 }
 
+/*
+The string method process in FileIO is used to collect the data from an input file.
+It uses "stoi" which converts the string number into an int.
+It reads all of the content from the text file, and returns it.
+*/
+
 string FileIO::process(string filename){
     ifstream infile;
     string line;
@@ -24,6 +30,11 @@ string FileIO::process(string filename){
     return content;
 }
 
+/*
+writeTo is used to simply write the contents of an entire game
+into a file the user specifies.
+*/
+
 void FileIO::writeTo(string filen, string contents){
     ofstream out_file1;
     out_file1.open(filen);
@@ -31,6 +42,12 @@ void FileIO::writeTo(string filen, string contents){
     out_file1.close();
 }
 
+
+/*
+getRows() and getColumns() are both used to return either the rows
+or columns. This is used in the main method to collect information
+on how many rows and columns the input file had the plot be.
+*/
 int FileIO::getRows(){
     return rows;
 }

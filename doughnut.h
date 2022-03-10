@@ -4,6 +4,10 @@
 #include <iostream>
 using namespace std;
 
+/*
+Simple Header Class for the Doughnut Variation of Gamemode.
+*/
+
 class Doughnut{
     public:
         Doughnut();

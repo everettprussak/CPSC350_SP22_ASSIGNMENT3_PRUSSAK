@@ -8,6 +8,15 @@
 #include <algorithm>
 #include <ctime>
 
+/*
+Main method uses a number of for loops, objects (classes), if statements and more to do the
+overall job for the Game of Life.
+It begins by asking the user if they want to use a random configuration or their file,
+which splits by either going through a random configuration or reading from their file.
+*/
+
+
+
 int main(int argc, char** argv){
 
     string random;
@@ -15,6 +24,20 @@ int main(int argc, char** argv){
     cout << "Random Configuration? (Answer in: YES or NO)" << endl;
     cin >> random;
     cout << endl;
+
+    /*
+    Here is the start of the Random If statement.
+    It will ask the user for a number of rows, columns, and 
+    population density for the start of the game.
+    The user will then be asked if they want to use Classic,
+    Mirror, or the Doughnut game mode.
+    After this, it will ask if they want to pause after each generation, 
+    slowly go through each generation, export all contents to a specified
+    output file, or just display everything on the terminal.
+    Depending on which mode and exporting method they choose, the game will be used
+    accordingly to each specific gamemode class.
+    */
+
     if(random=="YES" || random=="Yes" || random=="YEs" || random == "yes"){
         srand(time(NULL));
         int row, column, ro, co;
@@ -213,6 +236,21 @@ int main(int argc, char** argv){
         }
 
     }
+
+    /*
+        This is the other main part of the main program.
+        Instead of using a random generated plot, the user
+        gives the file name of an input file plot. It will also ask the user
+        for the game mode they want to use and if they want to pause, delay, output, or terminal the information and
+        game results.
+        The method goes through a number of split methods and collect the information
+        from the input file. Then it creates an instance of whichever gamemode the user choose,
+        and from there it will continually print the generation of the plot 
+        until it is either stable, empty, or it will continue forever if it is an infinite solution.
+        Lastly the user will ahve to click enter to exit the program and the instance of the class
+        is destroyed with the destructor.
+        */
+
     else{
         string file;
         cout << "Enter File Name (ex: myfile.txt)" << endl;
