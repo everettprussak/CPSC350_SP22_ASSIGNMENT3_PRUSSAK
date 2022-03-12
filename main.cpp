@@ -8,441 +8,248 @@
 #include <algorithm>
 #include <ctime>
 
+
 /*
 Main method uses a number of for loops, objects (classes), if statements and more to do the
 overall job for the Game of Life.
-It begins by asking the user if they want to use a random configuration or their file,
-which splits by either going through a random configuration or reading from their file.
+
+It starts by asking the User a number of questions (Gamemode, Input, Output, Pause, etc), 
+and stores the responses in variables.
 */
 
-
-
 int main(int argc, char** argv){
-
     string random;
-    FileIO *file1 = new FileIO();
-    cout << "Random Configuration? (Answer in: YES or NO)" << endl;
+    string gamemode;
+    string output_type;
+    string content;
+    string outfile;
+    int rows, columns;
+    int counter = 0;
+    FileIO file1;
+
+    cout << "Random Generated Plot or File Input: " << endl;
+    cout << "Respond 'Random' or 'File'" << endl;        
     cin >> random;
     cout << endl;
 
-    /*
-    Here is the start of the Random If statement.
-    It will ask the user for a number of rows, columns, and 
-    population density for the start of the game.
-    The user will then be asked if they want to use Classic,
-    Mirror, or the Doughnut game mode.
-    After this, it will ask if they want to pause after each generation, 
-    slowly go through each generation, export all contents to a specified
-    output file, or just display everything on the terminal.
-    Depending on which mode and exporting method they choose, the game will be used
-    accordingly to each specific gamemode class.
-    */
-
-    if(random=="YES" || random=="Yes" || random=="YEs" || random == "yes"){
-        srand(time(NULL));
-        int row, column, ro, co;
-        float density;
-        int cells;
-        string gamemode;
-        string outputting;
-        cout << "Enter Number of Rows: " << endl;
-        cin >> row;
+/* If user wants to use input file, the contents use the FileIO Class, and gets a string returned.
+The string uses .erase and remove to get rid of the newline characters. */
+    if(random=="File"||random=="file"||random=="FILE"){
+        string infile;
+        cout << "Enter Input File Name: " << endl;
+        cin >> infile;
         cout << endl;
-        cout << "Enter Numbr of Columns: " << endl;
-        cin >> column;
-        cout << endl;
-        cout << "Enter Starting Density between 0 and 1: " << endl;
-        cin >> density;
-        cout << endl;
-        cout << "Classic, Doughnut, or Mirror: " << endl;
-        cin >> gamemode;
-        cout << endl;
-        cout << "Pause, Delay, or Output? (Type as seen): " << endl;
-        cin >> outputting;
-        cout << endl;
-        string outfile;
-        if(outputting=="Output"||outputting=="output"){
-            cout << "Outputing File Name: " << endl;
-            cin >> outfile;
-        }
-        cells = density * row * column;
-        if(gamemode=="Classic" || gamemode=="classic" || gamemode=="CLASSIC"){
-            Classic *c = new Classic(row,column);
-            string total_contents;
-            for(int t=0; t<row; ++t){
-                for(int r=0; r<column; ++r){
-                    c->insertChar(t,r,'-');
-                }
-            }
-            for(int i=0; i<cells+1; ++i){
-                ro = rand() % row;
-                co = rand() % column;
-                while(c->alive(ro,co)){
-                    ro = rand() % row;
-                    co = rand() % column;
-                }
-                c->insertChar(ro,co,'X');
-            }
-            
-            if(outputting!="output" && outputting!="Output" && outputting!="OUTPUT"){
-                c->printGame();
-            }
-            string gametostring;
-            gametostring = c->stringGame();
-
-            while(c->empty()!=1 && c->stable()!=1){
-                if(outputting=="pause"||outputting=="Pause"||outputting=="PAUSE"){
-                    system("read -p 'Press Enter to continue...' var");
-                    c->generation();
-                    c->printGame();
-                    continue;
-                }
-
-                else if(outputting=="delay"||outputting=="Delay"||outputting=="DELAY"){
-                    sleep(2);
-                    c->generation();
-                    c->printGame();
-                    continue;
-                }
-                else if(outputting=="output" || outputting=="OUTPUT" || outputting=="Output"){
-                    total_contents = total_contents + gametostring;
-                    c->generation();
-                    gametostring = c->stringGame();
-                    total_contents = total_contents + gametostring;
-                    gametostring = "";
-                    file1->writeTo(outfile,total_contents);
-                    continue;
-                }
-
-                else{
-                    c->generation();
-                    c->printGame();
-                    continue;
-                }
-            }
-            c->~Classic();
-        }
-        else if(gamemode=="Mirror" || gamemode=="mirror" || gamemode=="MIRROR"){
-            Mirror *m = new Mirror(row,column);
-            string total_contents;
-            for(int t=0; t<row; ++t){
-                for(int r=0; r<column; ++r){
-                    m->insertChar(t,r,'-');
-                }
-            }
-            for(int i=0; i<cells+1; ++i){
-                ro = rand() % row;
-                co = rand() % column;
-                while(m->alive(ro,co)){
-                    ro = rand() % row;
-                    co = rand() % column;
-                }
-                m->insertChar(ro,co,'X');
-            }
-            
-            if(outputting!="output" && outputting!="Output" && outputting!="OUTPUT"){
-                m->printGame();
-            }
-            string gametostring;
-            gametostring = m->stringGame();
-
-            while(m->empty()!=1 && m->stable()!=1){
-                if(outputting=="pause"||outputting=="Pause"||outputting=="PAUSE"){
-                    system("read -p 'Press Enter to continue...' var");
-                    m->generation();
-                    m->printGame();
-                    continue;
-                }
-
-                else if(outputting=="delay"||outputting=="Delay"||outputting=="DELAY"){
-                    sleep(2);
-                    m->generation();
-                    m->printGame();
-                    continue;
-                }
-
-                else if(outputting=="output" || outputting=="OUTPUT" || outputting=="Output"){
-                    total_contents = total_contents + gametostring;
-                    m->generation();
-                    gametostring = m->stringGame();
-                    total_contents = total_contents + gametostring;
-                    gametostring = "";
-                    file1->writeTo(outfile,total_contents);
-                    continue;
-                }
-
-                else{
-                    m->generation();
-                    m->printGame();
-                    continue;
-                }
-            }
-            m->~Mirror();
-        }
-        else{
-            Doughnut *d = new Doughnut(row,column);
-            string total_contents;
-            for(int t=0; t<row; ++t){
-                for(int r=0; r<column; ++r){
-                    d->insertChar(t,r,'-');
-                }
-            }
-            for(int i=0; i<cells+1; ++i){
-                ro = rand() % row;
-                co = rand() % column;
-                while(d->alive(ro,co)){
-                    ro = rand() % row;
-                    co = rand() % column;
-                }
-                d->insertChar(ro,co,'X');
-            }
-            if(outputting!="output" && outputting!="Output" && outputting!="OUTPUT"){
-                d->printGame();
-            }
-            string gametostring;
-            gametostring = d->stringGame();
-
-            while(d->empty()!=1 && d->stable()!=1){
-                if(outputting=="pause"||outputting=="Pause"||outputting=="PAUSE"){
-                    system("read -p 'Press Enter to continue...' var");
-                    d->generation();
-                    d->printGame();
-                    continue;
-                }
-
-                else if(outputting=="delay"||outputting=="Delay"||outputting=="DELAY"){
-                    sleep(2);
-                    d->generation();
-                    d->printGame();
-                    continue;
-                }
-                else if(outputting=="output" || outputting=="OUTPUT" || outputting=="Output"){
-                    total_contents = total_contents + gametostring;
-                    d->generation();
-                    gametostring = d->stringGame();
-                    total_contents = total_contents + gametostring;
-                    gametostring = "";
-                    file1->writeTo(outfile,total_contents);
-                    continue;
-                }
-
-                else{
-                    d->generation();
-                    d->printGame();
-                    continue;
-                }
-            }
-            d->~Doughnut();
-        }
-
+        content = file1.process(infile);
+        rows = file1.getRows();
+        columns = file1.getColumns();
+        content.erase(remove(content.begin(), content.end(), '\n'), content.end());
     }
 
-    /*
-        This is the other main part of the main program.
-        Instead of using a random generated plot, the user
-        gives the file name of an input file plot. It will also ask the user
-        for the game mode they want to use and if they want to pause, delay, output, or terminal the information and
-        game results.
-        The method goes through a number of split methods and collect the information
-        from the input file. Then it creates an instance of whichever gamemode the user choose,
-        and from there it will continually print the generation of the plot 
-        until it is either stable, empty, or it will continue forever if it is an infinite solution.
-        Lastly the user will ahve to click enter to exit the program and the instance of the class
-        is destroyed with the destructor.
-        */
+/* The user wants to use random configuration instead. They are asked for row, columns, and Population Density
+I use a method srand and rand to that I researched online, and will give the grid a random plot using the 
+density the user wants.
+*/
+    else{
+        int alive, randomNum;
+        int count = 0;
+        float pop;
+        cout << "Enter Number of Rows: " << endl;
+        cin >> rows;
+        cout << endl;
+        cout << "Enter Number of Columns: " << endl;
+        cin >> columns;
+        cout << endl;
+        cout << "Enter Decimal for Population Density: " << endl;
+        cin >> pop;
+        cout << endl;
+        int cells = rows*columns;
+        alive = cells * pop;
+        char randomArray[cells];
+        srand(time(NULL));
+        for(int i=0; i<cells; ++i){
+            randomArray[i] = '-';
+        }
+        while(count<alive){
+            randomNum = rand() % cells;
+            if(randomArray[randomNum]!='X'){
+                    randomArray[randomNum] = 'X';
+                    count++;
+            }
+        }
+        for(int f=0; f<cells; f++){
+            content = content + randomArray[f];
+        }
+    }
+    cout << endl;
+    cout << "Classic, Doughnut, or Mirror: " << endl;
+    cout << "Respond 'Classic', 'Doughnut', or 'Mirror'" << endl;
+    cin >> gamemode;
+    cout << endl;
+    cout << "Pause, Delay, Output File, or Terminal: " << endl;
+    cout << "Respond 'Pause', 'Delay', 'Output', or 'Terminal'" << endl;
+    cin >> output_type;
+    if(output_type=="Output"||output_type=="output"||output_type=="OUTPUT"){
+        cout << "Enter Output File Name: " << endl;
+        cin >> outfile;
+        cout << endl;
+    }
+
+/*
+Here are where the three gamemodes split into their own classes.
+For each, the content from the input file or random configuration is 
+inserted into each individual cell for the gamemode.
+Depending on the output type of the game, it will vary. 
+However it goes through the generation, and then prints to either the screen
+or the output file that the user specified. If the game is not a infitie game, then
+the exit message is displayed, and the the specified gamemode is destructed.
+*/
+    if(gamemode=="Classic"||gamemode=="classic"||gamemode=="CLASSIC"){
+        Classic *cla = new Classic(rows,columns);
+        for(int i=0; i<rows; ++i){
+            for(int y=0; y<columns; ++y){
+                char temp = content[counter];
+                counter++;
+                cla->insertChar(i,y,temp);
+            }
+        }
+        if(output_type!="output" && output_type!="Output" && output_type!="OUTPUT"){
+                cla->printGame();
+        }
+
+        string gametostring = cla->stringGame();
+        string total_contents;
+
+        while(cla->empty()!=1 && cla->stable()!=1){
+            if(output_type=="Pause"||output_type=="PAUSE"||output_type=="pause"){
+                system("read -p 'Press Enter to continue...' var");
+                cla->generation();
+                cla->printGame();
+                continue;
+            }
+            else if(output_type=="Delay"||output_type=="delay"||output_type=="DELAY"){
+                sleep(2);
+                cla->generation();
+                cla->printGame();
+                continue;
+            }
+            else if(output_type=="output"||output_type=="Output"||output_type=="OUTPUT"){
+                total_contents = total_contents + gametostring;
+                cla->generation();
+                gametostring = cla->stringGame();
+                total_contents = total_contents + gametostring;
+                gametostring = "";
+                file1.writeTo(outfile,total_contents);
+                continue;
+
+            }
+            else{
+                cla->generation();
+                cla->printGame();
+                continue;
+            }
+        }
+        system("read -p 'Press Enter to Exit...' var");
+        cla->~Classic();
+    }
+
+    else if(gamemode=="Doughnut"||gamemode=="doughnut"||gamemode=="DOUGHNUT"||gamemode=="Donut"||gamemode=="donut"){
+        Doughnut *don = new Doughnut(rows,columns);
+        for(int i=0; i<rows; ++i){
+            for(int y=0; y<columns; ++y){
+                char temp = content[counter];
+                counter++;
+                don->insertChar(i,y,temp);
+            }
+        }
+        if(output_type!="output" && output_type!="Output" && output_type!="OUTPUT"){
+                don->printGame();
+        }
+
+        string gametostring = don->stringGame();
+        string total_contents;
+
+        while(don->empty()!=1 && don->stable()!=1){
+            if(output_type=="Pause"||output_type=="PAUSE"||output_type=="pause"){
+                system("read -p 'Press Enter to continue...' var");
+                don->generation();
+                don->printGame();
+                continue;
+            }
+            else if(output_type=="Delay"||output_type=="delay"||output_type=="DELAY"){
+                sleep(2);
+                don->generation();
+                don->printGame();
+                continue;
+            }
+            else if(output_type=="output"||output_type=="Output"||output_type=="OUTPUT"){
+                total_contents = total_contents + gametostring;
+                don->generation();
+                gametostring = don->stringGame();
+                total_contents = total_contents + gametostring;
+                gametostring = "";
+                file1.writeTo(outfile,total_contents);
+                continue;
+
+            }
+            else{
+                don->generation();
+                don->printGame();
+                continue;
+            }
+        }
+        system("read -p 'Press Enter to Exit...' var");
+        don->~Doughnut();
+    }
 
     else{
-        string file;
-        cout << "Enter File Name (ex: myfile.txt)" << endl;
-        cin >> file;
-        cout << endl;
-        FileIO *file1 = new FileIO();
-        string content = file1->process(file);
-        string mode;
-        cout << "Classic, Doughnut, or Mirror" << endl;
-        cin >> mode;
-        cout << endl;
-        string pause;
-        cout << "Pause? (Answer: YES or NO)" << endl;
-        cin >> pause;
-        cout << endl;
-        string delay;
-        string output;
-        string out_file;
-        if(pause=="no"||pause=="No"||pause=="NO"){
-            
-            cout << "Small Delay? (Answer: YES or NO)" << endl;
-            cin >> delay;
-            cout << endl;
-            if(delay=="NO"||delay=="No"||delay=="no"){
-                cout << "Output File? (Answer YES or NO)" << endl;
-                cin >> output;
-                cout << endl;
-                if(output=="YES"||output=="Yes"||output=="yes"){
-                    cout << "Output File Name: (ex:output.txt)" << endl;
-                    cin >> out_file;
-                    cout << endl;
-                }
+        Mirror *mir = new Mirror(rows,columns);
+        for(int i=0; i<rows; ++i){
+            for(int y=0; y<columns; ++y){
+                char temp = content[counter];
+                counter++;
+                mir->insertChar(i,y,temp);
             }
         }
-        int rows = file1->getRows();
-        int cols = file1->getColumns();
-        string gametostring;
-        content.erase(remove(content.begin(), content.end(), '\n'), content.end());
-        if(mode=="Classic"||mode=="classic"){
-            Classic *c = new Classic(rows,cols);
-            string total_contents;
-            int count = 0;
-            for(int i=0; i<rows; i++){
-                for(int b=0; b<cols; b++){
-                    c->insertChar(i,b,content[count]);
-                    count = count + 1;
-                }
-            }
-
-            if(output!="Yes" && output!="YES" && output!="yes"){
-                c->printGame();
-            }
-
-            gametostring = c->stringGame();
-
-            while(c->empty()!=1 && c->stable()!=1){
-                if(pause=="YES"||pause=="Yes"||pause=="yes"){
-                    system("read -p 'Press Enter to continue...' var");
-                    c->generation();
-                    c->printGame();
-                    continue;
-                }
-
-                else if(delay=="Yes"||delay=="YES"||delay=="yes"){
-                    sleep(2);
-                    c->generation();
-                    c->printGame();
-                    continue;
-                }
-                else if(output=="Yes" || output=="YES" || output=="yes"){
-                    total_contents = total_contents + gametostring;
-                    c->generation();
-                    gametostring = c->stringGame();
-                    total_contents = total_contents + gametostring;
-                    gametostring = "";
-                    file1->writeTo(out_file,total_contents);
-                    continue;
-                }
-
-                else{
-                    c->generation();
-                    c->printGame();
-                    continue;
-                }
-            }
-
-             system("read -p 'Press Enter to Exit...' var");
-             c->~Classic();
+        if(output_type!="output" && output_type!="Output" && output_type!="OUTPUT"){
+                mir->printGame();
         }
 
-        else if(mode=="Doughnut"||mode=="doughnut"){
-            Doughnut *d = new Doughnut(file1->getRows(), file1->getColumns());
-            int count = 0;
-            string total_contents;
-            for(int i=0; i<rows; i++){
-                for(int b=0; b<cols; b++){
-                   d->insertChar(i,b,content[count]);
-                    count = count + 1;
-                }
+        string gametostring = mir->stringGame();
+        string total_contents;
+
+        while(mir->empty()!=1 && mir->stable()!=1){
+            if(output_type=="Pause"||output_type=="PAUSE"||output_type=="pause"){
+                system("read -p 'Press Enter to continue...' var");
+                mir->generation();
+                mir->printGame();
+                continue;
             }
-
-            if(output!="Yes" && output!="YES" && output!="yes"){
-                d->printGame();
+            else if(output_type=="Delay"||output_type=="delay"||output_type=="DELAY"){
+                sleep(2);
+                mir->generation();
+                mir->printGame();
+                continue;
             }
-
-            gametostring = d->stringGame();
-
-            while(d->empty()!=1 && d->stable()!=1){
-                if(pause=="YES"||pause=="Yes"||pause=="yes"){
-                    system("read -p 'Press Enter to continue...' var");
-                    d->generation();
-                    d->printGame();
-                    continue;
-                }
-
-                else if(delay=="Yes"||delay=="YES"||delay=="yes"){
-                    sleep(2);
-                    d->generation();
-                    d->printGame();
-                    continue;
-                }
-                else if(output=="Yes" || output=="YES" || output=="yes"){
-                    total_contents = total_contents + gametostring;
-                    d->generation();
-                    gametostring = d->stringGame();
-                    total_contents = total_contents + gametostring;
-                    gametostring = "";
-                    file1->writeTo(out_file,total_contents);
-                    continue;
-                }
-
-                else{
-                    d->generation();
-                    d->printGame();
-                    continue;
-                }
+            else if(output_type=="output"||output_type=="Output"||output_type=="OUTPUT"){
+                total_contents = total_contents + gametostring;
+                mir->generation();
+                gametostring = mir->stringGame();
+                total_contents = total_contents + gametostring;
+                gametostring = "";
+                file1.writeTo(outfile,total_contents);
+                continue;
 
             }
-             system("read -p 'Press Enter to Exit...' var");
-             d->~Doughnut();
+            else{
+                mir->generation();
+                mir->printGame();
+                continue;
+            }
         }
-
-        else{
-            Mirror *m = new Mirror(file1->getRows(), file1->getColumns());
-            int count = 0;
-            string total_contents;
-            for(int i=0; i<rows; i++){
-                for(int b=0; b<cols; b++){
-                    m->insertChar(i,b,content[count]);
-                    count = count + 1;
-                }
-            }
-            if(output!="Yes" && output!="YES" && output!="yes"){
-                m->printGame();
-            }
-
-            gametostring = m->stringGame();
-
-            while(m->empty()!=1 && m->stable()!=1){
-                if(pause=="YES"||pause=="Yes"||pause=="yes"){
-                    system("read -p 'Press Enter to continue...' var");
-                    m->generation();
-                    m->printGame();
-                    continue;
-                }
-
-                else if(delay=="Yes"||delay=="YES"||delay=="yes"){
-                    sleep(2);
-                    m->generation();
-                    m->printGame();
-                    continue;
-                }
-                else if(output=="Yes" || output=="YES" || output=="yes"){
-                    total_contents = total_contents + gametostring;
-                    m->generation();
-                    gametostring = m->stringGame();
-                    total_contents = total_contents + gametostring;
-                    gametostring = "";
-                    file1->writeTo(out_file,total_contents);
-                    continue;
-                }
-
-                else{
-                    m->generation();
-                    m->printGame();
-                    continue;
-                }
-            }
-             system("read -p 'Press Enter to Exit...' var");
-             m->~Mirror();
-        }
+        system("read -p 'Press Enter to Exit...' var");
+        mir->~Mirror();
     }
 
-    return 0;
+    return 1;
 }
+        
