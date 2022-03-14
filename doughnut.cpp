@@ -163,7 +163,7 @@ void Doughnut::generation(){
                 neighbors = neighbors + alive(rows-2,0);
                 neighbors = neighbors + alive(rows-2,1);
                 neighbors = neighbors + alive(rows-1,1);
-                neighbors = neighbors + alive(rows-1,columns-1);
+                neighbors = neighbors + alive(0,columns-1);
                 neighbors = neighbors + alive(0,0);
                 neighbors = neighbors + alive(0,1);
                 neighbors = neighbors + alive(rows-1,columns-1);
@@ -179,7 +179,7 @@ void Doughnut::generation(){
                 neighbors = neighbors + alive(0,columns-1);
                 neighbors = neighbors + alive(rows-2,0);
             }
-            else if(z==0){ //1st Row (5 Neighbors)
+            else if(z==0){ //1st Row (8 Neighbors)
                 neighbors = neighbors + alive(0,w-1);
                 neighbors = neighbors + alive(1,w-1);
                 neighbors = neighbors + alive(1,w);
@@ -189,7 +189,7 @@ void Doughnut::generation(){
                 neighbors = neighbors + alive(rows-1,w+1); //7
                 neighbors = neighbors + alive(rows-1,w-1); //8
             }
-            else if(w==0){ //1st Column (5 Neighbors)
+            else if(w==0){ //1st Column (8 Neighbors)
                 neighbors = neighbors + alive(z-1,0);
                 neighbors = neighbors + alive(z+1,0);
                 neighbors = neighbors + alive(z,1);

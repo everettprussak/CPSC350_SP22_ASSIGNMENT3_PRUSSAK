@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <algorithm>
 #include <ctime>
+#include<algorithm>
+#include<stdio.h>
 
 
 /*
