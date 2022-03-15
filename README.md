@@ -10,3 +10,5 @@
 ## My program starts with generation 0 as either the input file given, or the random configuration.
 ## The program also repeats the generation once if it is considered "stable".
 ## The program will run until it is stable or empty, otherwise it will run until a new terminal is started.
+## When inputing a file out of scope, it must include the FULL PATH. 
+## (example: /Users/everettprussak/Desktop/abc/other.txt)

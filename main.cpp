@@ -42,6 +42,9 @@ The string uses .erase and remove to get rid of the newline characters. */
         cin >> infile;
         cout << endl;
         content = file1.process(infile); //using FileIO class "process" method to get a string of the file
+        if(content=="unsuccessful"){ //Program will not continue as the file input had something wrong with it
+            return -1; //either the txt file was formatted wrong or did not exist.
+        }
         rows = file1.getRows();
         columns = file1.getColumns();
         content.erase(remove(content.begin(), content.end(), '\n'), content.end()); //Takes away newline characters from string

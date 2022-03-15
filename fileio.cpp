@@ -12,17 +12,24 @@ It reads all of the content from the text file, and returns it.
 */
 
 string FileIO::process(string filename){
-    ifstream infile;
-    string line;
-    string content;
-    string r, c;
-    infile.open(filename);
-    getline(infile,line);
-    r = line;
-    rows = stoi(r);
-    getline(infile,line);
-    c = line;
-    columns = stoi(c);
+    ifstream infile(filename);
+    if(infile.fail()){
+        cout << "File Does Not Exist!" << endl;
+        return "unsuccessful";
+    }
+    string line, content, r, c;
+    try{
+        getline(infile,line);
+        r = line;
+        rows = stoi(r);
+        getline(infile,line);
+        c = line;
+        columns = stoi(c);
+    }
+    catch(exception &err){
+        cout << "File in Wrong Type!" << endl;
+        return "unsuccessful";
+    }
     while(getline(infile,line)){
         content = content + line + "\n";
     }
